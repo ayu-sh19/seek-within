@@ -67,7 +67,7 @@ export const appRouter = router({
       await db.file.delete({
         where: {
           id: input.id,
-          userId
+          userId,
         },
       });
 

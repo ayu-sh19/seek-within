@@ -43,6 +43,25 @@ export const appRouter = router({
     });
   }),
 
+  getFile: privateProcedure
+    .input(z.object({ key: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const { userId } = ctx;
+
+      const file = await db.file.findFirst({
+        where: {
+          key: input.key,
+          userId: userId,
+        },
+      });
+
+      if (!file) {
+        throw new TRPCError({ code: "NOT_FOUND" });
+      }
+
+      return file;
+    }),
+
   /*input is similar to payload; here we are using zod to validate the input*/
   deleteFile: privateProcedure
     .input(

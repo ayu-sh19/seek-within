@@ -12,27 +12,43 @@ import { Button } from "./ui/button";
 import Dropzone from "react-dropzone";
 import { Cloud, File } from "lucide-react";
 import { Progress } from "./ui/progress";
+import { useUploadThing } from "@/lib/uploadthing";
+import { useToast } from "@/hooks/use-toast";
+import { trpc } from "@/app/_trpc/client";
+import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 const UploadDropzone = () => {
+  const router = useRouter();
   const [isUploading, setIsUploading] = useState<boolean>(true);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
+  const { toast } = useToast();
+
+  const { startUpload } = useUploadThing("pdfUploader");
+
+  const { mutate: startPolling } = trpc.getFile.useMutation({
+    onSuccess: (file) => {
+      router.push(`/dashboard/${file.id}`);
+    },
+    retry: true,
+    retryDelay: 500,
+  });
 
   /* Determinate Progress Bar */
   const startSimulatedProgress = () => {
     setUploadProgress(0);
     const interval = setInterval(() => {
       setUploadProgress((prevProgress) => {
-        if(prevProgress >= 95){
+        if (prevProgress >= 95) {
           clearInterval(interval);
           return prevProgress;
-        }
-        else{
+        } else {
           return prevProgress + 5;
         }
-      })
-    },500)
+      });
+    }, 500);
     return interval;
-  } 
+  };
 
   return (
     <Dropzone
@@ -42,8 +58,31 @@ const UploadDropzone = () => {
         const progressInterval = startSimulatedProgress();
         //handle file uploading
 
+        const res = await startUpload(acceptedFile);
+
+        if (!res) {
+          return toast({
+            title: "Something went Wrong",
+            variant: "destructive",
+            description: "Please try again later.",
+          });
+        }
+
+        const [fileResponse] = res;
+        const key = fileResponse?.key;
+
+        if (!key) {
+          return toast({
+            title: "Something went Wrong",
+            variant: "destructive",
+            description: "Please try again later.",
+          });
+        }
+
         clearInterval(progressInterval);
         setUploadProgress(100);
+
+        startPolling({ key });
       }}
     >
       {({ getRootProps, getInputProps, acceptedFiles }) => (
@@ -51,7 +90,6 @@ const UploadDropzone = () => {
           {...getRootProps()}
           className="border h-64 m-4 border-dashed border-gray-300 rounded-lg"
         >
-          <input {...getInputProps()} />
           <div className="flex items-center justify-center h-full w-full">
             <label
               htmlFor="dropzone-file"
@@ -77,9 +115,19 @@ const UploadDropzone = () => {
               ) : null}
               {isUploading ? (
                 <div className="w-full mt-4 max-w-xs mx-auto">
-                  <Progress value={uploadProgress} className="h-1 w-full bg-zinc-200" />
+                  <Progress
+                    value={uploadProgress}
+                    className="h-1 w-full bg-zinc-200"
+                  />
                 </div>
               ) : null}
+
+              <input
+                {...getInputProps()}
+                type="file"
+                id="dropzone-id"
+                className="hidden"
+              />
             </label>
           </div>
         </div>

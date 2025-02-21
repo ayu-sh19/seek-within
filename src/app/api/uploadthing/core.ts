@@ -1,7 +1,10 @@
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { createUploadthing, type FileRouter } from "uploadthing/next";
-import { UploadThingError } from "uploadthing/server";
 import { db } from "@/db";
+import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
+import { PineconeStore } from "@langchain/pinecone";
+import { Pinecone } from "@pinecone-database/pinecone";
+import { HuggingFaceInferenceEmbeddings } from "@langchain/community/embeddings/hf";
 
 const f = createUploadthing();
 
@@ -34,6 +37,68 @@ export const ourFileRouter = {
           uploadStatus: "PROCESSING",
         },
       });
+      try {
+        const response = await fetch(createdFile.url);
+        const blob = await response.blob();
+        const loader = new PDFLoader(blob);
+
+        const pageLevelDocs = await loader.load();
+        const pagesAmt = pageLevelDocs.length;
+
+        /* const splitter = new RecursiveCharacterTextSplitter({
+          chunkSize: 1000,
+          chunkOverlap: 200,
+        });
+        const docs = await splitter.splitDocuments(pageLevelDocs); */
+
+        //vectorise entire document
+
+        const pinecone = new Pinecone({
+          apiKey: process.env.PINECONE_API_KEY!,
+        });
+        console.log("create pinecone client");
+        const pineconeIndex = pinecone.Index(
+          process.env.PINECONE_INDEX!
+        ) as any;
+
+        const embeddings = new HuggingFaceInferenceEmbeddings({
+          apiKey: process.env.HF_API_KEY || "",
+        });
+
+        console.log("create openAI embeddings");
+
+        /* const vectorStore = await PineconeStore.fromExistingIndex(embeddings, {
+          pineconeIndex,
+          namespace: createdFile.id,
+        });
+        await vectorStore.addDocuments(docs); */
+
+        await PineconeStore.fromDocuments(pageLevelDocs, embeddings, {
+          pineconeIndex,
+          namespace: createdFile.id,
+        });
+
+        console.log("create pinecone store");
+
+        await db.file.update({
+          data: {
+            uploadStatus: "SUCCESS",
+          },
+          where: {
+            id: createdFile.id,
+          },
+        });
+      } catch (err) {
+        console.log(err);
+        await db.file.update({
+          data: {
+            uploadStatus: "FAILED",
+          },
+          where: {
+            id: createdFile.id,
+          },
+        });
+      }
     }),
 } satisfies FileRouter;
 

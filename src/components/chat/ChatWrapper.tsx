@@ -6,19 +6,35 @@ import { trpc } from "@/app/_trpc/client";
 import { ChevronLeft, Loader2, XCircle } from "lucide-react";
 import Link from "next/link";
 import { buttonVariants } from "../ui/button";
+import { UploadStatus } from "@prisma/client";
 
 interface ChatWrapperProps {
   fileId: string;
 }
 
 const ChatWrapper = ({ fileId }: ChatWrapperProps) => {
-  const { data, isLoading } = trpc.getFileUploadStatus.useQuery(
+  // const { data, isLoading } = trpc.getFileUploadStatus.useQuery(
+  //   {
+  //     fileId,
+  //   },
+  //   /* {
+  //     refetchInterval: (data) =>
+  //       (data?.status === "SUCCESS" ? false : 5000)
+
+  //   } */
+  // );
+
+  const { data, isLoading, error } = trpc.getFileUploadStatus.useQuery(
     {
       fileId,
     },
     {
-      refetchInterval: (data) =>
-        data?.status === "SUCCESS" || data?.status === "FAILED" ? false : 500,
+      refetchInterval: (data) => {
+        return data.state.data?.status === "SUCCESS" ||
+          data.state.data?.status === "FAILED"
+          ? false
+          : 5000;
+      },
     }
   );
 

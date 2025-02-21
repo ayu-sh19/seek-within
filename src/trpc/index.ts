@@ -3,6 +3,7 @@ import { privateProcedure, publicProcedure, router } from "./trpc";
 import { TRPCError } from "@trpc/server";
 import { db } from "@/db";
 import { z } from "zod";
+import { UploadStatus } from "@prisma/client";
 
 export const appRouter = router({
   authCallback: publicProcedure.query(async () => {
@@ -105,7 +106,8 @@ export const appRouter = router({
 
       if (!file) return { status: "PENDING" as const };
 
-      return { status: file.uploadStatus };
+      const data = { status: file.uploadStatus };
+      return data;
     }),
 });
 export type AppRouter = typeof appRouter;

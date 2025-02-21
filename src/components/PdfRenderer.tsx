@@ -25,7 +25,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-
+import PdfFullScreen from "./PdfFullScreen";
 import SimpleBar from "simplebar-react";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
@@ -41,6 +41,10 @@ const PdfRenderer = ({ url }: PdfRendererProps) => {
   const [currPage, setCurrPage] = useState<number>(1);
   const [scale, setScale] = useState<number>(1);
   const [rotation, setRotation] = useState<number>(0);
+  const [renderedScale, setRenderedScale] = useState<number | null>(null);
+
+  //when the rendered scale is not same as the previous scale, which means we are loading a new scale
+  const isLoading = renderedScale !== scale;
 
   //Schema validation
   const CustomPageValidator = z.object({
@@ -80,6 +84,7 @@ const PdfRenderer = ({ url }: PdfRendererProps) => {
             disabled={currPage <= 1}
             onClick={() => {
               setCurrPage((prev) => (prev - 1 > 1 ? prev - 1 : 1));
+              setValue("page", String(currPage - 1));
             }}
           >
             <ChevronDown className="h-4 w-4" />
@@ -112,6 +117,7 @@ const PdfRenderer = ({ url }: PdfRendererProps) => {
               setCurrPage((prev) =>
                 prev + 1 > numPages! ? numPages! : prev + 1
               );
+              setValue("page", String(currPage + 1));
             }}
           >
             <ChevronUp className="h-4 w-4" />
@@ -149,6 +155,8 @@ const PdfRenderer = ({ url }: PdfRendererProps) => {
           >
             <RotateCw className="h-4 w-4" />
           </Button>
+
+          <PdfFullScreen fileUrl={url} />
         </div>
       </div>
 
@@ -174,11 +182,30 @@ const PdfRenderer = ({ url }: PdfRendererProps) => {
               file={url}
               className="max-h-full"
             >
+              {isLoading && renderedScale ? (
+                <Page
+                  width={width ? width : 1}
+                  pageNumber={currPage}
+                  scale={scale}
+                  rotate={rotation}
+                  key={'@' + renderedScale}
+                />
+              ) : null}
+
+
               <Page
+                className={cn(isLoading ? "hidden" : "")}
                 width={width ? width : 1}
                 pageNumber={currPage}
                 scale={scale}
                 rotate={rotation}
+                key={"@" + scale}
+                loading={
+                  <div className="flex justify-center">
+                    <Loader2 className="my-24 h-6 w-6 animate-spin" />
+                  </div>
+                }
+                onRenderSuccess={() => setRenderedScale(scale)}
               />
             </Document>
           </div>

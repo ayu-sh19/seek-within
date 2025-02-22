@@ -45,12 +45,6 @@ export const ourFileRouter = {
         const pageLevelDocs = await loader.load();
         const pagesAmt = pageLevelDocs.length;
 
-        /* const splitter = new RecursiveCharacterTextSplitter({
-          chunkSize: 1000,
-          chunkOverlap: 200,
-        });
-        const docs = await splitter.splitDocuments(pageLevelDocs); */
-
         //vectorise entire document
 
         const pinecone = new Pinecone({
@@ -66,12 +60,6 @@ export const ourFileRouter = {
         });
 
         console.log("create openAI embeddings");
-
-        /* const vectorStore = await PineconeStore.fromExistingIndex(embeddings, {
-          pineconeIndex,
-          namespace: createdFile.id,
-        });
-        await vectorStore.addDocuments(docs); */
 
         await PineconeStore.fromDocuments(pageLevelDocs, embeddings, {
           pineconeIndex,

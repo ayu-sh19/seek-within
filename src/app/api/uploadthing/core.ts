@@ -18,7 +18,7 @@ export const ourFileRouter = {
     },
   })
     // Set permissions and file types for this FileRoute
-    .middleware(async ({ req }) => {
+    .middleware(async ({ }) => {
       const { getUser } = getKindeServerSession();
       const user = await getUser();
       if (!user || !user.id) {
@@ -43,7 +43,7 @@ export const ourFileRouter = {
         const loader = new PDFLoader(blob);
 
         const pageLevelDocs = await loader.load();
-        const pagesAmt = pageLevelDocs.length;
+        // const pagesAmt = pageLevelDocs.length;
 
         //vectorise entire document
 

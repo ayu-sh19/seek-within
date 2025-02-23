@@ -141,7 +141,7 @@ USER INPUT: ${message}
         const reader = response.body?.getReader();
 
         // while (true) {
-        const { done, value } = await reader!.read();
+        const { value } = await reader!.read();
         // if (done) break;
 
         // Decode the current chunk

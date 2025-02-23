@@ -10,8 +10,9 @@ import { useState } from "react";
 
 const Dashboard = () => {
   const utils = trpc.useUtils();
-  const [currentlyDeletingFiles, setCurrentlyDeletingFiles] =
-    useState<String | null>(null);
+  const [currentlyDeletingFiles, setCurrentlyDeletingFiles] = useState<
+    string | null
+  >(null);
 
   const { data: files, isLoading } = trpc.getUserFiles.useQuery();
   const { mutate: deleteFile } = trpc.deleteFile.useMutation({

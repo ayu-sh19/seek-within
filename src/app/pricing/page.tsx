@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
+import UpgradeButton from "@/components/UpgradeButton";
 
 const Page = async () => {
   const { getUser } = getKindeServerSession();
@@ -80,12 +81,14 @@ const Page = async () => {
   return (
     <>
       <MaxWidthWrapper className="mb-8 mt-24 text-center max-w-5xl">
-        <div className="max-auto mb-10 sm:max-w-lg">
-          <h1 className="text-6xl font-bold sm:text-7xl">Pricing</h1>
-          <p className="mt-5 text-gray-600 sm:text-lg">
-            Either you&apos;re trying out the service or need more out of it,
-            we&apos;ve got you covered
-          </p>
+        <div className="max-w-full flex items-center justify-center">
+          <div className="max-auto mb-10 sm:max-w-lg">
+            <h1 className="text-6xl font-bold sm:text-7xl">Pricing</h1>
+            <p className="mt-5 text-gray-600 sm:text-lg">
+              Either you&apos;re trying out the service or need more out of it,
+              we&apos;ve got you covered
+            </p>
+          </div>
         </div>
         <div className="pt-12 grid-cols-1 grid gap-10 lg:grid-cols-2">
           <TooltipProvider>

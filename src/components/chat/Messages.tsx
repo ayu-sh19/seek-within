@@ -3,12 +3,17 @@ import { INFINITE_QUERY_LIMIT } from "@/config/infinite-query";
 import { Loader2, MessageSquare } from "lucide-react";
 import Skeleton from "react-loading-skeleton";
 import Message from "./Message";
+import { useContext, useEffect, useRef } from "react";
+import { ChatContext } from "./ChatContext";
+import { useIntersection } from "@mantine/hooks";
 
 interface MessagesProps {
   fileId: string;
 }
 
 const Messages = ({ fileId }: MessagesProps) => {
+  const { isLoading: isAIThinking } = useContext(ChatContext);
+
   const { data, isLoading, fetchNextPage } =
     trpc.getFileMessages.useInfiniteQuery(
       {
@@ -35,9 +40,23 @@ const Messages = ({ fileId }: MessagesProps) => {
   };
 
   const combinedMessages = [
-    ...(true ? [loadingMessage] : []),
+    ...(isAIThinking ? [loadingMessage] : []),
     ...(messages ?? []),
   ];
+
+  const lastMessageRef = useRef<HTMLDivElement>(null);
+
+  const { ref, entry } = useIntersection({
+    root: lastMessageRef.current,
+    threshold: 1,
+  });
+
+  useEffect(() => {
+    if (entry?.isIntersecting) {
+      fetchNextPage();
+    }
+  }, [entry, fetchNextPage]);
+
   return (
     <div className="flex max-h-[calc(100vh-3.5rem-7rem)] border-zinc-200 flex-1 flex-col-reverse gap-4 py-3 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch">
       {combinedMessages && combinedMessages.length > 0 ? (
@@ -49,6 +68,7 @@ const Messages = ({ fileId }: MessagesProps) => {
           if (i === combinedMessages.length - 1) {
             return (
               <Message
+                ref={ref}
                 isNextMessageSamePerson={isNextMessageSamePerson}
                 key={message.id}
                 message={message}

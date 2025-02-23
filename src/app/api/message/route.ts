@@ -67,7 +67,7 @@ export const POST = async (req: NextRequest) => {
     orderBy: {
       createdAt: "asc",
     },
-    take: 1,
+    take: 6,
   });
 
   const formattedPrevMessages = prevMessages.map((msg) => ({
@@ -113,7 +113,7 @@ USER INPUT: ${message}
 
   // Call the Hugging Face Inference API
   const hfResponse = await fetch(
-    "https://api-inference.huggingface.co/models/Qwen/Qwen2.5-72B-Instruct",
+    "https://api-inference.huggingface.co/models/HuggingFaceH4/zephyr-7b-beta",
     {
       method: "POST",
       headers: {
@@ -149,14 +149,14 @@ USER INPUT: ${message}
         buffer += chunk;
 
         // Assume that each complete chunk is separated by a newline
+        console.log("!!!!!!!FULLTEXT******", buffer);
         const lines = buffer.split("\n");
         const data = typeof lines === "string" ? JSON.parse(lines) : lines;
 
         const fullText = JSON.parse(data[0])[0]?.generated_text;
 
-        console.log('!!!!!!!FULLTEXT******', fullText);
+        const marker = "ASSISTANT";
 
-        const marker = "RESPONSE";
         const markerIndex = fullText?.indexOf(marker);
         if (markerIndex === -1) {
           throw new Error("ANSWER marker not found in the input text.");
@@ -197,7 +197,7 @@ USER INPUT: ${message}
         } */
 
         const answer = fullText.slice(markerIndex + marker.length).trim();
-        console.log('@@@@@@@@@@@@@@ANSWER**********',answer);
+        console.log("@@@@@@@@@@@@@@ANSWER**********", answer);
         const encoder = new TextEncoder();
 
         controller.enqueue(encoder.encode(answer));

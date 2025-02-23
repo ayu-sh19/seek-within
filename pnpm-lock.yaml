@@ -32,6 +32,9 @@ importers:
       '@langchain/textsplitters':
         specifier: ^0.1.0
         version: 0.1.0(@langchain/core@0.3.40(openai@4.85.3(ws@8.18.1)(zod@3.24.2)))
+      '@mantine/hooks':
+        specifier: ^7.17.0
+        version: 7.17.0(react@19.0.0)
       '@pinecone-database/pinecone':
         specifier: ^5.0.2
         version: 5.0.2
@@ -1506,6 +1509,11 @@ packages:
     engines: {node: '>=18'}
     peerDependencies:
       '@langchain/core': '>=0.2.21 <0.4.0'
+
+  '@mantine/hooks@7.17.0':
+    resolution: {integrity: sha512-vo3K49mLy1nJ8LQNb5KDbJgnX0xwt3Y8JOF3ythjB5LEFMptdLSSgulu64zj+QHtzvffFCsMb05DbTLLpVP/JQ==}
+    peerDependencies:
+      react: ^18.x || ^19.x
 
   '@next/env@15.1.7':
     resolution: {integrity: sha512-d9jnRrkuOH7Mhi+LHav2XW91HOgTAWHxjMPkXMGBc9B2b7614P7kjt8tAplRvJpbSt4nbO1lugcT/kAaWzjlLQ==}
@@ -5845,6 +5853,10 @@ snapshots:
     dependencies:
       '@langchain/core': 0.3.40(openai@4.85.3(ws@8.18.1)(zod@3.24.2))
       js-tiktoken: 1.0.19
+
+  '@mantine/hooks@7.17.0(react@19.0.0)':
+    dependencies:
+      react: 19.0.0
 
   '@next/env@15.1.7': {}
 

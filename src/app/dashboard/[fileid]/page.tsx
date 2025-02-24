@@ -5,12 +5,13 @@ import PdfRenderer from "@/components/PdfRenderer";
 import ChatWrapper from "@/components/chat/ChatWrapper";
 
 interface PageProps {
-  params: {
+  params: Promise<{
     fileid: string;
-  };
+  }>;
 }
 
-const Page = async ({ params }: PageProps) => {
+const Page = async (props: PageProps) => {
+  const params = await props.params;
   const { fileid } = params;
 
   const { getUser } = getKindeServerSession();

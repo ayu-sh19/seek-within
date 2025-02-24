@@ -5,6 +5,7 @@ import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
 import { PineconeStore } from "@langchain/pinecone";
 import { Pinecone } from "@pinecone-database/pinecone";
 import { HuggingFaceInferenceEmbeddings } from "@langchain/community/embeddings/hf";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 const f = createUploadthing();
 

@@ -3,7 +3,6 @@ import { privateProcedure, publicProcedure, router } from "./trpc";
 import { TRPCError } from "@trpc/server";
 import { db } from "@/db";
 import { z } from "zod";
-import { UploadStatus } from "@prisma/client";
 import { INFINITE_QUERY_LIMIT } from "@/config/infinite-query";
 import { absoluteUrl } from "@/lib/utils";
 import { getUserSubscriptionPlan, stripe } from "@/lib/stripe";
@@ -39,7 +38,7 @@ export const appRouter = router({
   }),
 
   getUserFiles: privateProcedure.query(async ({ ctx }) => {
-    const { user, userId } = ctx;
+    const { userId } = ctx;
 
     return await db.file.findMany({
       where: {

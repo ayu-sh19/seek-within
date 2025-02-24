@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { useRouter, useSearchParams } from "next/navigation";
 import { trpc } from "../_trpc/client";
 import { useEffect } from "react";
@@ -28,7 +28,7 @@ const Page = () => {
         router.push("/sign-in");
       }
     }
-  }, [data, origin, router]);
+  }, [data, origin, router, error]);
 
   return (
     <div className="w-full mt-24 flex justify-center">

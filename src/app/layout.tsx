@@ -1,15 +1,15 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Inter } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import Navbar from "@/components/Navbar";
 import Providers from "@/components/Providers";
 
-import "react-loading-skeleton/dist/skeleton.css"
-import "simplebar-react/dist/simplebar.min.css"
+import "react-loading-skeleton/dist/skeleton.css";
+import "simplebar-react/dist/simplebar.min.css";
 import { Toaster } from "@/components/ui/toaster";
 
-const geistSans = Geist({
+/* const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
 });
@@ -17,7 +17,7 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
-});
+}); */
 
 const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
@@ -39,7 +39,7 @@ export default function RootLayout({
             inter.className
           )}
         >
-          <Toaster/>
+          <Toaster />
           <Navbar />
           {children}
         </body>

@@ -10,11 +10,9 @@ import { PLANS } from "@/config/stripe";
 import { cn } from "@/lib/utils";
 import {
   ArrowRight,
-  Check,
   CircleCheck,
   CircleX,
   HelpCircle,
-  Minus,
 } from "lucide-react";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";

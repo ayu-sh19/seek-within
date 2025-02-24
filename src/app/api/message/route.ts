@@ -5,6 +5,7 @@ import { db } from "@/db";
 import { HuggingFaceInferenceEmbeddings } from "@langchain/community/embeddings/hf";
 import { Pinecone } from "@pinecone-database/pinecone";
 import { PineconeStore } from "@langchain/pinecone";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 export const POST = async (req: NextRequest) => {
   //to ask questions

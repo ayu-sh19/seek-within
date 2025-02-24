@@ -1,13 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import {
-  Dialog,
-  DialogHeader,
-  DialogTrigger,
-  DialogContent,
-  DialogTitle,
-} from "./ui/dialog";
+import { Dialog, DialogTrigger, DialogContent, DialogTitle } from "./ui/dialog";
 import { Button } from "./ui/button";
 import Dropzone from "react-dropzone";
 import { Cloud, File, Loader2 } from "lucide-react";
@@ -15,7 +9,6 @@ import { Progress } from "./ui/progress";
 import { useUploadThing } from "@/lib/uploadthing";
 import { useToast } from "@/hooks/use-toast";
 import { trpc } from "@/app/_trpc/client";
-import { redirect } from "next/navigation";
 import { useRouter } from "next/navigation";
 
 const UploadDropzone = () => {

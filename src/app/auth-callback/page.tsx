@@ -1,10 +1,10 @@
 "use client";
 import { useRouter, useSearchParams } from "next/navigation";
 import { trpc } from "../_trpc/client";
-import { useEffect } from "react";
+import { useEffect, Suspense } from "react";
 import { Loader2 } from "lucide-react";
 
-const Page = () => {
+const PageContent = () => {
   const router = useRouter();
 
   const searchParams = useSearchParams();
@@ -38,6 +38,14 @@ const Page = () => {
         <p>You will be redirected automatically</p>
       </div>
     </div>
+  );
+};
+
+const Page = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <PageContent />
+    </Suspense>
   );
 };
 

@@ -144,67 +144,58 @@ USER INPUT: ${message}
         const { value } = await reader!.read();
         // if (done) break;
 
-        // Decode the current chunk
-        const chunk = decoder.decode(value, { stream: true });
+        const chunk = decoder.decode(value);
         buffer += chunk;
 
-        // Assume that each complete chunk is separated by a newline
-        console.log("!!!!!!!FULLTEXT******", buffer);
-        const lines = buffer.split("\n");
-        const data = typeof lines === "string" ? JSON.parse(lines) : lines;
+        // const lines = buffer.split("\n");
+        // const data = typeof buffer === "string" ? JSON.parse(buffer) : buffer;
+        // console.log("***********", JSON.parse(buffer));
 
-        const fullText = JSON.parse(data[0])[0]?.generated_text;
+        // const data = JSON.parse(buffer);
 
-        const marker = "ASSISTANT";
+        // const fullText = data[0];
 
-        const markerIndex = fullText?.indexOf(marker);
-        if (markerIndex === -1) {
-          throw new Error("ANSWER marker not found in the input text.");
+        const markers = [
+          "Assistant: RESPONSE:",
+          "RESPONSE:",
+          "ANSWER:",
+          "ASSISTANT:",
+        ];
+
+        let lastIndex = -1;
+        let selectedMarker = "";
+
+        for (const marker of markers) {
+          const index = buffer.lastIndexOf(marker);
+          if (index > lastIndex) {
+            lastIndex = index;
+            selectedMarker = marker;
+          }
         }
 
-        // Process all lines except the last (which might be incomplete)
-        /* for (let i = 0; i < lines.length - 1; i++) {
-            const line = lines[i].trim();
-            if (line) {
-              try {
-                // If the streamed data is JSON, parse it
-                const parsed = JSON.parse(line);
-                const text = parsed.text || "";
-                fullCompletion += text;
-                controller.enqueue(text);
-              } catch (error) {
-                // If parsing fails, enqueue the raw text
-                fullCompletion += line;
-                controller.enqueue(line);
-              }
-            }
-          }
-          // Save the last (possibly partial) line for the next chunk
-          buffer = lines[lines.length - 1]; */
-        // }
+        console.log(buffer);
 
-        // Process any remaining text in the buffer
-        /* if (buffer.trim()) {
-          try {
-            const parsed = JSON.parse(buffer);
-            const text = parsed.text || "";
-            fullCompletion += text;
-            controller.enqueue(text);
-          } catch (error) {
-            fullCompletion += buffer;
-            controller.enqueue(buffer);
-          }
-        } */
+        // let answer;
 
-        const answer = fullText.slice(markerIndex + marker.length).trim();
-        console.log("@@@@@@@@@@@@@@ANSWER**********", answer);
-        const encoder = new TextEncoder();
+        if (lastIndex !== -1) {
+          const answer = buffer
+            .substring(lastIndex + selectedMarker.length)
+            .trim();
+          const fullText = answer.slice(0, -3);
+          const encoder = new TextEncoder();
 
-        controller.enqueue(encoder.encode(answer));
-        controller.close();
+          controller.enqueue(encoder.encode(fullText));
+          controller.close();
 
-        await onCompletion(answer);
-        controller.close();
+          await onCompletion(fullText);
+          controller.close();
+          // console.log("Assistant Response:", answer);
+        } else {
+          console.error("Assistant response not found.");
+        }
+
+        // const answer = fullText.slice(markerIndex + marker.length).trim();
+        // console.log("@@@@@@@@@@@@@@ANSWER**********", answer);
       },
     });
   }

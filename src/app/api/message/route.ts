@@ -71,7 +71,7 @@ export const POST = async (req: NextRequest) => {
     take: 6,
   });
 
-  const formattedPrevMessages = prevMessages.map((msg : any) => ({
+  const formattedPrevMessages = prevMessages.map((msg: any) => ({
     role: msg.isUserMessage ? ("user" as const) : ("assistant" as const),
     content: msg.text,
   }));
@@ -161,6 +161,7 @@ USER INPUT: ${message}
           "RESPONSE:",
           "ANSWER:",
           "ASSISTANT:",
+          "ASSISTANT OUTPUT:",
         ];
 
         let lastIndex = -1;
@@ -192,6 +193,7 @@ USER INPUT: ${message}
           controller.close();
           // console.log("Assistant Response:", answer);
         } else {
+          await onCompletion("Model busy ! Please try again later");
           console.error("Assistant response not found.");
         }
 

@@ -112,7 +112,7 @@ USER INPUT: ${message}
     },
   };
 
-  const modelUrl = process.env.AI_MODEL_URL;
+  const modelUrl = process.env.AI_MODEL_URL as string;
 
   // Call the Hugging Face Inference API
   const hfResponse = await fetch(modelUrl, {
@@ -147,13 +147,13 @@ USER INPUT: ${message}
         const chunk = decoder.decode(value);
         buffer += chunk;
 
-        // const lines = buffer.split("\n");
-        // const data = typeof buffer === "string" ? JSON.parse(buffer) : buffer;
-        // console.log("***********", JSON.parse(buffer));
+        /* const lines = buffer.split("\n");
+        const data = typeof buffer === "string" ? JSON.parse(buffer) : buffer;
+        console.log("***********", JSON.parse(buffer));
 
-        // const data = JSON.parse(buffer);
+        const data = JSON.parse(buffer);
 
-        // const fullText = data[0];
+        const fullText = data[0]; */
 
         const markers = [
           "Assistant: RESPONSE:",
@@ -161,6 +161,7 @@ USER INPUT: ${message}
           "ANSWER:",
           "ASSISTANT:",
           "ASSISTANT OUTPUT:",
+          "Assistant:",
         ];
 
         let lastIndex = -1;

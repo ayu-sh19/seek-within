@@ -112,18 +112,17 @@ USER INPUT: ${message}
     },
   };
 
+  const modelUrl = process.env.AI_MODEL_URL;
+
   // Call the Hugging Face Inference API
-  const hfResponse = await fetch(
-    "https://api-inference.huggingface.co/models/HuggingFaceH4/zephyr-7b-beta",
-    {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${process.env.HF_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    }
-  );
+  const hfResponse = await fetch(modelUrl, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${process.env.HF_API_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
 
   /* const response = await hfResponse.json();
   console.log("---------------HFResponse_------------", response); */
@@ -184,12 +183,15 @@ USER INPUT: ${message}
             .substring(lastIndex + selectedMarker.length)
             .trim();
           const fullText = answer.slice(0, -3);
+          const result = fullText.replace(/\\n/g, "\n");
           const encoder = new TextEncoder();
 
-          controller.enqueue(encoder.encode(fullText));
-          controller.close();
+          console.log(typeof fullText);
+          console.log("*******", fullText);
 
-          await onCompletion(fullText);
+          controller.enqueue(encoder.encode(result));
+
+          await onCompletion(result);
           controller.close();
           // console.log("Assistant Response:", answer);
         } else {

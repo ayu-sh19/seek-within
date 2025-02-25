@@ -50,7 +50,7 @@ const BillingForm = ({ subscriptionPlan }: BillingFormProps) => {
             <CardTitle>Subscription Plan</CardTitle>
             <CardDescription>
               You are currently on the
-              <strong>{subscriptionPlan.name} plan.</strong>
+              <strong> {subscriptionPlan.name} plan.</strong>
             </CardDescription>
           </CardHeader>
           <CardFooter className="flex flex-col items-start space-y-2 md:flex-row md:justify-between md: space-x-0">

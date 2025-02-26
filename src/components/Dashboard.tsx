@@ -77,7 +77,7 @@ const Dashboard = ({subscriptionPlan} : PageProps) => {
                   </div>
                   <div className="flex items-center gap-2">
                     <MessageSquare className="h-4 w-4" />
-                    mocked
+                    {file.Message.length}
                   </div>
                   <Button
                     size="sm"

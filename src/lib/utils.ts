@@ -16,7 +16,7 @@ export function constructMetadata({
   title = "seekWithin - talk with your docs",
   description = "A SAAS platform to chat with your documents",
   image = "/thumbnail.png",
-  icons = "/icon.png",
+  icons = "icon.png",
   noIndex = false,
 }: {
   title?: string;
